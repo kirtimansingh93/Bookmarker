@@ -27,6 +27,10 @@ body {
   padding-bottom: 20px;
 }
 
+label {
+  text-align: left;
+}
+
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,

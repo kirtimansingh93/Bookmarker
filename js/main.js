@@ -7,6 +7,10 @@ function saveBookmark(e) {
   var siteName = document.getElementById('siteName').value;
   var siteUrl = document.getElementById('siteUrl').value;
   
+  if (!validateForm(siteName, siteUrl)) {
+    return false
+  }
+
   // Create object to store into local storage as an array of objects.
   var bookmark = {
     name: siteName, 
@@ -89,10 +93,29 @@ function fetchBookmarks() {
 
     bookmarksResults.innerHTML += '<div class="well">' + 
                                   '<h3>' + name + 
-                                    '<a class="btn btn-primary" target="_blank" href="' + url + '">Visit</a>' + 
+                                    '<a class="btn btn-info" target="_blank" href="' + url + '">Visit</a>' + 
                                     '<a onclick="deleteBookmark(\''+url+'\' )" class="btn btn-danger" href="#">Delete</a>'
                                   '</h3>' +
                                   '</div>';
     
   }
+}
+
+// Validate Form function
+function validateForm(siteName, siteUrl) {
+  // Validate form so cannot submit when name and url are empty
+  if (!siteName || !siteUrl) {
+    alert('Please fill in the form');
+    return false;
+  }
+
+  // Using regex to validate that url field is filled with valid http url
+  var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+  var regex = new RegExp(expression);
+
+  if (!siteUrl.match(regex)) {
+    alert('Please use a valid url')
+    return false;
+  }
+  return true;
 }
