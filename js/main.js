@@ -6,11 +6,15 @@ function saveBookmark(e) {
   // Get  from values
   var siteName = document.getElementById('siteName').value;
   var siteUrl = document.getElementById('siteUrl').value;
-  console.log(siteName);
-  console.log(siteUrl);
   
+  // Create object to store into local storage as an array of objects.
+  var bookmark = {
+    name: siteName, 
+    url: siteUrl
+  }
   
-
+  console.log(bookmark);
+  
   // Prevent form from submitting
   e.preventDefault();
 }
