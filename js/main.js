@@ -40,7 +40,59 @@ function saveBookmark(e) {
     // Reset back to localStorage
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   }
+  //Re-fetch Bookmarks
+  fetchBookmarks();
+
+  // // check if bookmark already exists'
+  // for (var i = 0; i < bookmarks.length; i++) {
+  //   if (bookmarks[i].name == siteName) {
+  //     alert('Bookmark already exists')
+  //     return false
+  //   }
+  // }
   
   // Prevent form from submitting
   e.preventDefault();
+}
+
+// Delete Bookmark
+function deleteBookmark(url) {
+  // Get Bookmarks from localStorage
+  var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+  // Loop through bookmarks
+  for (var i = 0; i < bookmarks.length; i++) {
+    if (bookmarks[i].url === url) {
+      // Remove from array
+      bookmarks.splice(i, 1)
+    }
+  } 
+  // Reset back to localStorage
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+  //Re-fetch Bookmarks
+  fetchBookmarks();
+}
+
+// Fetch Bookmarks
+function fetchBookmarks() {
+  // Get bookmarks from localStorage and parse into array of objects
+  var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+  
+  // Get output div id
+  var bookmarksResults = document.getElementById('bookmarksResults');
+
+  // Build output
+  bookmarksResults.innerHTML = '';
+  for (var i = 0; i < bookmarks.length; i++) {
+    var name = bookmarks[i].name;
+    var url = bookmarks[i].url;
+
+    bookmarksResults.innerHTML += '<div class="well">' + 
+                                  '<h3>' + name + 
+                                    '<a class="btn btn-primary" target="_blank" href="' + url + '">Visit</a>' + 
+                                    '<a onclick="deleteBookmark(\''+url+'\' )" class="btn btn-danger" href="#">Delete</a>'
+                                  '</h3>' +
+                                  '</div>';
+    
+  }
 }
