@@ -13,7 +13,15 @@ function saveBookmark(e) {
     url: siteUrl
   }
   
-  console.log(bookmark);
+  // Local Storage Test 
+      /*
+      - Local storage stores strings therefore we mush parse the json into a       string in order to save it and when we need to get it back we can parse    it back to json.
+      */
+  localStorage.setItem('test', 'Hello World');
+  console.log(localStorage.getItem('test'));
+  localStorage.removeItem('test');
+  console.log(localStorage.getItem('test'));
+
   
   // Prevent form from submitting
   e.preventDefault();
