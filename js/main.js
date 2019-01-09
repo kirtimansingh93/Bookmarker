@@ -3,20 +3,21 @@ document.getElementById('myForm').addEventListener('submit', saveBookmark)
 
 // Save Bookmark
 function saveBookmark(e) {
-  // Get  from values
+  // Get form values and save into variables
   var siteName = document.getElementById('siteName').value;
   var siteUrl = document.getElementById('siteUrl').value;
   
+  // Cannot just call validateForm(siteName, siteUrl) because that can return true or false depending on whether siteName and siteUrl are entered and valid.
   if (!validateForm(siteName, siteUrl)) {
-    return false
+    return false;
   }
 
-  // Create object to store into local storage as an array of objects.
+  // Create object that contains siteName and siteUrl form values in order to store into local storage as an array of objects.
   var bookmark = {
     name: siteName, 
     url: siteUrl
   }
-  
+
   /*
   // Local Storage Test 
     - Local storage stores strings therefore we mush parse                         the json into a string in order to save it and when we                       need to get it back we can parse it back to json.
@@ -37,23 +38,19 @@ function saveBookmark(e) {
     // Set to localStorage (JSON.stringify stores bookmark as a string formatted    json array - json to string)
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   } else {
-    // Get bookmarks from localStorage (JSON.parse will turn a string into json.)
+    // Get bookmarks from localStorage (JSON.parse will turn a string into array of objects - json.)
     var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
     // Add bookmark to array
     bookmarks.push(bookmark);
     // Reset back to localStorage
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   }
+
+  // Clear From
+  document.getElementById('myForm').reset();
+
   //Re-fetch Bookmarks
   fetchBookmarks();
-
-  // // check if bookmark already exists'
-  // for (var i = 0; i < bookmarks.length; i++) {
-  //   if (bookmarks[i].name == siteName) {
-  //     alert('Bookmark already exists')
-  //     return false
-  //   }
-  // }
   
   // Prevent form from submitting
   e.preventDefault();
@@ -67,7 +64,7 @@ function deleteBookmark(url) {
   for (var i = 0; i < bookmarks.length; i++) {
     if (bookmarks[i].url === url) {
       // Remove from array
-      bookmarks.splice(i, 1)
+      bookmarks.splice(i, 1);
     }
   } 
   // Reset back to localStorage
@@ -79,25 +76,29 @@ function deleteBookmark(url) {
 
 // Fetch Bookmarks
 function fetchBookmarks() {
-  // Get bookmarks from localStorage and parse into array of objects
-  var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-  
-  // Get output div id
-  var bookmarksResults = document.getElementById('bookmarksResults');
+  if (localStorage.getItem('bookmarks') === null) {
+    return false;
+  } else {
+    // Get bookmarks from localStorage and parse into array of objects
+    var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
 
-  // Build output
-  bookmarksResults.innerHTML = '';
-  for (var i = 0; i < bookmarks.length; i++) {
-    var name = bookmarks[i].name;
-    var url = bookmarks[i].url;
+    // Get output div id
+    var bookmarksResults = document.getElementById('bookmarksResults');
 
-    bookmarksResults.innerHTML += '<div class="well">' + 
-                                  '<h3>' + name + 
-                                    '<a class="btn btn-info" target="_blank" href="' + url + '">Visit</a>' + 
-                                    '<a onclick="deleteBookmark(\''+url+'\' )" class="btn btn-danger" href="#">Delete</a>'
-                                  '</h3>' +
-                                  '</div>';
-    
+    // Build output
+    bookmarksResults.innerHTML = '';
+    for (var i = 0; i < bookmarks.length; i++) {
+      var name = bookmarks[i].name;
+      var url = bookmarks[i].url;
+
+      bookmarksResults.innerHTML += '<div class="well">' +
+                                      '<h3>' + name +
+                                        '<a class="btn btn-info" target="_blank" href="' + url + '">Visit</a>' +
+                                        '<a onclick="deleteBookmark(\'' + url + '\' )" class="btn btn-danger" href="#">Delete</a>'
+                                      '</h3>' +
+                                    '</div>';
+
+    }
   }
 }
 
@@ -117,5 +118,25 @@ function validateForm(siteName, siteUrl) {
     alert('Please use a valid url')
     return false;
   }
+
+  // Get bookmarks from localStorage (JSON.parse will turn a string into            array of objects - json.)
+  var bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+
+  // Loop through bookmarks and check if bookmark already exists'
+  for (var i = 0; i < bookmarks.length; i++) {
+    if (bookmarks[i].name == siteName || bookmarks[i].url === siteUrl) {
+      alert('Bookmark already exists')
+      return false;
+    }
+  // Reset back to localStorage
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  
+  // Clear From
+  document.getElementById('myForm').reset();
+
+  //Re-fetch Bookmarks
+  fetchBookmarks();
+  }  
+
   return true;
 }
